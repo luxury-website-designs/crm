@@ -33,29 +33,29 @@
         .modal-content, .toast {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
-        /* Custom scrollbar for a premium feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4a4a4a;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #d4af37; /* Gold hover */
-        }
-        /* Glassmorphism effect for cards */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #4a4a4a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
         .card {
             background: rgba(26, 26, 26, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        /* Custom focus rings */
         input:focus, select:focus, textarea:focus {
             --tw-ring-color: #d4af37 !important;
+        }
+        .loader {
+            border: 4px solid #f3f3f340;
+            border-top: 4px solid #d4af37;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -88,7 +88,7 @@
                     <img src="https://placehold.co/40x40/D4AF37/0a0a0a?text=SD" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-amber-400">
                     <div class="ml-3">
                         <p class="font-semibold text-sm text-white">Admin User</p>
-                        <p class="text-xs text-gray-400">Spark Designs Team</p>
+                        <p id="user-id-display" class="text-xs text-gray-400 truncate w-40" title="User ID">Loading...</p>
                     </div>
                 </div>
             </div>
@@ -114,37 +114,26 @@
 
             <!-- Page Content -->
             <div id="content" class="p-6 md:p-8 flex-1">
-                <!-- Content will be dynamically loaded here -->
+                <!-- Loading State -->
+                <div id="loading-state" class="flex justify-center items-center h-full">
+                    <div class="loader"></div>
+                </div>
             </div>
         </main>
     </div>
     
-    <!-- Add Lead Modal -->
+    <!-- Modals -->
     <div id="add-lead-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden opacity-0 z-40">
         <div class="modal-content card rounded-lg shadow-xl w-full max-w-md p-6 transform scale-95">
             <div class="flex justify-between items-center pb-3 border-b border-white/10">
                 <h3 class="text-xl font-semibold text-white">Add New Lead</h3>
-                <button id="close-modal-btn" class="text-gray-400 hover:text-white">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             <form id="add-lead-form" class="mt-4 space-y-4">
-                <div>
-                    <label for="firstName" class="block text-sm font-medium text-gray-300">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
-                </div>
-                <div>
-                    <label for="lastName" class="block text-sm font-medium text-gray-300">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-                    <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
-                </div>
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-300">Phone</label>
-                    <input type="tel" id="phone" name="phone" class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
-                </div>
+                <input type="text" id="firstName" name="firstName" required placeholder="First Name" class="w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
+                <input type="text" id="lastName" name="lastName" required placeholder="Last Name" class="w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
+                <input type="email" id="email" name="email" required placeholder="Email" class="w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
+                <input type="tel" id="phone" name="phone" placeholder="Phone" class="w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
                 <div class="flex justify-end pt-4">
                     <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 px-6 rounded-lg transition-colors duration-200">Save Lead</button>
                 </div>
@@ -152,12 +141,9 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
     <div id="confirmation-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden opacity-0 z-50">
         <div class="modal-content card rounded-lg shadow-xl w-full max-w-sm p-6 transform scale-95 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-500/20">
-                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-400"></i>
-            </div>
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-500/20"><i data-lucide="alert-triangle" class="h-6 w-6 text-red-400"></i></div>
             <h3 id="confirmation-title" class="text-lg font-medium text-white mt-5">Delete Client</h3>
             <p id="confirmation-message" class="text-sm text-gray-400 mt-2">Are you sure? This action cannot be undone.</p>
             <div class="mt-6 flex justify-center space-x-4">
@@ -167,419 +153,418 @@
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2"></div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- DATA STORE ---
-            let clients = [
-                { id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@realty.com', phone: '555-123-4567', status: 'Active Client', projectStatus: 'In Progress', notes: [{ text: 'Initial consultation call.', date: '2023-10-26' }], tasks: [{ text: 'Send design mockups', completed: false }] },
-                { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@realty.com', phone: '555-987-6543', status: 'Lead', projectStatus: 'Proposal Sent', notes: [], tasks: [] },
-                { id: 3, firstName: 'Sam', lastName: 'Wilson', email: 'sam.wilson@realty.com', phone: '555-456-7890', status: 'Past Client', projectStatus: 'Completed', notes: [], tasks: [] },
-                { id: 4, firstName: 'Emily', lastName: 'White', email: 'emily.white@realty.com', phone: '555-321-9876', status: 'Active Client', projectStatus: 'Development', notes: [{ text: 'Discussed new feature requests.', date: '2023-10-25' }], tasks: [{ text: 'Implement photo gallery', completed: true }, { text: 'Deploy to staging server', completed: false }] },
-            ];
-            let activityLog = [
-                { text: 'Emily White was assigned to you.', time: '2 hours ago'},
-                { text: 'Proposal sent to Jane Smith.', time: '1 day ago'},
-            ];
+    <script type="module">
+        // Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, onSnapshot, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-            // --- UI ELEMENTS ---
-            const content = document.getElementById('content');
-            const pageTitle = document.getElementById('page-title');
+        // --- GLOBAL STATE & CONFIG ---
+        let db, auth, userId;
+        let clients = [];
+        let activityLog = [];
+        let unsubscribeClients = null;
+        let unsubscribeActivityLog = null;
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'spark-crm-dev';
 
-            // --- ROUTING & PAGE RENDERING ---
-            const routes = {
-                '#dashboard': renderDashboard,
-                '#clients': renderClients,
-                '#settings': renderSettings,
-                '#client-detail': renderClientDetail,
-            };
+        // --- UI ELEMENTS ---
+        const content = document.getElementById('content');
+        const pageTitle = document.getElementById('page-title');
+        const loadingState = document.getElementById('loading-state');
 
-            function navigate() {
-                const hash = window.location.hash || '#dashboard';
-                const routeKey = hash.split('/')[0];
-                const route = routes[routeKey] || renderDashboard;
-                
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    if (link.getAttribute('href').startsWith(routeKey)) {
-                        link.classList.add('bg-white/10', 'text-white');
+        // --- FIREBASE INITIALIZATION ---
+        async function initFirebase() {
+            try {
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('user-id-display').textContent = userId;
+                        document.getElementById('user-id-display').title = userId;
+                        setupRealtimeListeners();
+                        navigate();
                     } else {
-                        link.classList.remove('bg-white/10', 'text-white');
+                         // If __initial_auth_token is available, use it. Otherwise, sign in anonymously.
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
                     }
                 });
-                
-                route();
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                content.innerHTML = `<div class="text-center text-red-400">Error: Could not connect to the database.</div>`;
             }
+        }
 
-            function renderDashboard() {
-                pageTitle.textContent = 'Dashboard';
-                content.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
-                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="user-plus" class="w-6 h-6 text-amber-400"></i></div>
-                            <div class="ml-4">
-                                <p class="text-gray-400 text-sm">New Leads This Month</p>
-                                <p class="text-2xl font-bold text-white">12</p>
-                            </div>
-                        </div>
-                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
-                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="users" class="w-6 h-6 text-amber-400"></i></div>
-                            <div class="ml-4">
-                                <p class="text-gray-400 text-sm">Active Clients</p>
-                                <p class="text-2xl font-bold text-white">${clients.filter(c => c.status === 'Active Client').length}</p>
-                            </div>
-                        </div>
-                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
-                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="briefcase" class="w-6 h-6 text-amber-400"></i></div>
-                            <div class="ml-4">
-                                <p class="text-gray-400 text-sm">Projects In Progress</p>
-                                <p class="text-2xl font-bold text-white">${clients.filter(c => c.projectStatus === 'In Progress' || c.projectStatus === 'Development').length}</p>
-                            </div>
-                        </div>
-                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
-                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="dollar-sign" class="w-6 h-6 text-amber-400"></i></div>
-                            <div class="ml-4">
-                                <p class="text-gray-400 text-sm">Monthly Recurring Revenue</p>
-                                <p class="text-2xl font-bold text-white">$5,250</p>
-                            </div>
+        // --- REALTIME LISTENERS ---
+        function setupRealtimeListeners() {
+            if (unsubscribeClients) unsubscribeClients();
+            if (unsubscribeActivityLog) unsubscribeActivityLog();
+
+            const clientsCollectionPath = `artifacts/${appId}/users/${userId}/clients`;
+            const clientsQuery = query(collection(db, clientsCollectionPath), orderBy('createdAt', 'desc'));
+            unsubscribeClients = onSnapshot(clientsQuery, (snapshot) => {
+                clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                loadingState.style.display = 'none';
+                navigate(); // Re-render the current view with new data
+            }, (error) => {
+                console.error("Error fetching clients:", error);
+                loadingState.style.display = 'none';
+            });
+
+            const activityLogCollectionPath = `artifacts/${appId}/users/${userId}/activityLog`;
+            const activityLogQuery = query(collection(db, activityLogCollectionPath), orderBy('createdAt', 'desc'));
+            unsubscribeActivityLog = onSnapshot(activityLogQuery, (snapshot) => {
+                activityLog = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            }, (error) => console.error("Error fetching activity log:", error));
+        }
+        
+        // --- ROUTING & PAGE RENDERING ---
+        const routes = {
+            '#dashboard': renderDashboard,
+            '#clients': renderClients,
+            '#settings': renderSettings,
+            '#client-detail': renderClientDetail,
+        };
+
+        function navigate() {
+            if (!userId) return; // Don't render if not authenticated
+            const hash = window.location.hash || '#dashboard';
+            const routeKey = hash.split('/')[0];
+            const route = routes[routeKey] || renderDashboard;
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.getAttribute('href').startsWith(routeKey) ? link.classList.add('bg-white/10', 'text-white') : link.classList.remove('bg-white/10', 'text-white');
+            });
+            
+            route();
+            lucide.createIcons();
+        }
+
+        function renderDashboard() {
+            pageTitle.textContent = 'Dashboard';
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- KPI Cards -->
+                    <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                        <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="user-plus" class="w-6 h-6 text-amber-400"></i></div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Total Leads</p>
+                            <p class="text-2xl font-bold text-white">${clients.length}</p>
                         </div>
                     </div>
-                    
-                    <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 card p-6 rounded-lg">
-                            <h3 class="text-xl font-semibold mb-4 text-white">Lead Pipeline</h3>
-                            <div class="space-y-4">
-                                ${renderPipelineStage('New Lead', 3, 'bg-blue-500')}
-                                ${renderPipelineStage('Contacted', 5, 'bg-cyan-500')}
-                                ${renderPipelineStage('Proposal Sent', 4, 'bg-amber-500')}
-                                ${renderPipelineStage('Negotiation', 1, 'bg-orange-500')}
-                                ${renderPipelineStage('Closed - Won', 2, 'bg-green-500')}
+                    <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                        <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="users" class="w-6 h-6 text-amber-400"></i></div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Active Clients</p>
+                            <p class="text-2xl font-bold text-white">${clients.filter(c => c.status === 'Active Client').length}</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                        <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="briefcase" class="w-6 h-6 text-amber-400"></i></div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Projects In Progress</p>
+                            <p class="text-2xl font-bold text-white">${clients.filter(c => c.projectStatus === 'In Progress' || c.projectStatus === 'Development').length}</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                        <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="dollar-sign" class="w-6 h-6 text-amber-400"></i></div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Monthly Revenue (Est)</p>
+                            <p class="text-2xl font-bold text-white">$5,250</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 card p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-white">Lead Pipeline</h3>
+                        <div class="space-y-4">
+                            <!-- Pipeline data would be calculated from client statuses -->
+                            ${renderPipelineStage('New Lead', clients.filter(c=>c.status==='Lead').length, 'bg-blue-500')}
+                            ${renderPipelineStage('Active', clients.filter(c=>c.status==='Active Client').length, 'bg-green-500')}
+                            ${renderPipelineStage('Past', clients.filter(c=>c.status==='Past Client').length, 'bg-gray-500')}
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-white">Recent Activity</h3>
+                        <div class="space-y-4">
+                            ${activityLog.slice(0, 5).map(activity => `
+                                <div class="flex items-start">
+                                    <div class="bg-gray-700 p-2 rounded-full mr-3 mt-1"><i data-lucide="history" class="w-4 h-4 text-gray-300"></i></div>
+                                    <div>
+                                        <p class="text-sm text-gray-200">${activity.text}</p>
+                                        <p class="text-xs text-gray-500">${new Date(activity.createdAt?.toDate()).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderPipelineStage(name, count, colorClass) {
+            const total = clients.length || 1;
+            const percentage = (count / total) * 100;
+            return `
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-gray-400">${name}</span>
+                        <span class="text-sm font-bold text-white">${count}</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5"><div class="${colorClass} h-2.5 rounded-full" style="width: ${percentage}%"></div></div>
+                </div>`;
+        }
+
+        function renderClients(filteredClients = clients) {
+            pageTitle.textContent = 'Clients';
+            content.innerHTML = `
+                <div class="mb-6"><div class="relative">
+                    <input type="text" id="search-clients" placeholder="Search clients..." class="w-full pl-10 pr-4 py-2 bg-gray-900/50 border border-white/20 rounded-lg shadow-sm focus:outline-none focus:ring-2">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="search" class="w-5 h-5 text-gray-400"></i></div>
+                </div></div>
+                <div id="clients-list-container">${renderClientsTable(filteredClients)}</div>
+            `;
+            document.getElementById('search-clients').addEventListener('input', handleSearch);
+        }
+        
+        function renderClientsTable(clientList) {
+            if (clientList.length === 0) {
+                return `<div class="text-center py-16 card rounded-lg">
+                    <i data-lucide="users" class="w-16 h-16 mx-auto text-gray-500"></i>
+                    <h3 class="mt-4 text-xl font-semibold text-white">No clients found</h3>
+                    <p class="mt-2 text-gray-400">Add a new lead to get started.</p>
+                </div>`;
+            }
+            return `<div class="card rounded-lg overflow-hidden"><div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-400">
+                    <thead class="text-xs text-gray-300 uppercase bg-black/30">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Name</th><th scope="col" class="px-6 py-3">Contact</th><th scope="col" class="px-6 py-3">Status</th>
+                            <th scope="col" class="px-6 py-3">Project Status</th><th scope="col" class="px-6 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${clientList.map(client => `
+                            <tr class="border-b border-white/10 hover:bg-white/5">
+                                <td class="px-6 py-4 font-medium text-white whitespace-nowrap">${client.firstName} ${client.lastName}</td>
+                                <td class="px-6 py-4"><div>${client.email}</div><div class="text-xs text-gray-500">${client.phone}</div></td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span></td>
+                                <td class="px-6 py-4">${client.projectStatus}</td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="#client-detail/${client.id}" class="font-medium text-amber-400 hover:underline mr-4">View</a>
+                                    <button data-id="${client.id}" class="delete-client-btn font-medium text-red-500 hover:underline">Delete</button>
+                                </td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div></div>`;
+        }
+
+        function renderClientDetail() {
+            const id = window.location.hash.split('/')[1];
+            const client = clients.find(c => c.id === id);
+            if (!client) { window.location.hash = '#clients'; return; }
+
+            pageTitle.textContent = `${client.firstName} ${client.lastName}`;
+            content.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold text-white mb-4 border-b border-white/10 pb-2">Contact Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div><strong class="text-gray-400">Full Name:</strong> ${client.firstName} ${client.lastName}</div>
+                                <div><strong class="text-gray-400">Status:</strong> <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span></div>
+                                <div><strong class="text-gray-400">Email:</strong> <a href="mailto:${client.email}" class="text-amber-400 hover:underline">${client.email}</a></div>
+                                <div><strong class="text-gray-400">Phone:</strong> ${client.phone}</div>
                             </div>
                         </div>
                         <div class="card p-6 rounded-lg">
-                            <h3 class="text-xl font-semibold mb-4 text-white">Recent Activity</h3>
-                            <div class="space-y-4">
-                                ${activityLog.map(activity => `
-                                    <div class="flex items-start">
-                                        <div class="bg-gray-700 p-2 rounded-full mr-3 mt-1"><i data-lucide="history" class="w-4 h-4 text-gray-300"></i></div>
-                                        <div>
-                                            <p class="text-sm text-gray-200">${activity.text}</p>
-                                            <p class="text-xs text-gray-500">${activity.time}</p>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                            <h3 class="text-xl font-semibold text-white mb-4 border-b border-white/10 pb-2">Project Details</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div><strong class="text-gray-400">Project Status:</strong> ${client.projectStatus}</div>
+                                <div><strong class="text-gray-400">Domain:</strong> realtor-john-doe.com</div>
+                                <div><strong class="text-gray-400">Launch Date:</strong> Est. 2023-12-01</div>
                             </div>
                         </div>
                     </div>
-                `;
-                lucide.createIcons();
-            }
-            
-            function renderPipelineStage(name, count, colorClass) {
-                const percentage = (count / 15) * 100;
-                return `
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-sm font-medium text-gray-400">${name}</span>
-                            <span class="text-sm font-bold text-white">${count}</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2.5">
-                            <div class="${colorClass} h-2.5 rounded-full" style="width: ${percentage}%"></div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            function renderClients(filteredClients = clients) {
-                pageTitle.textContent = 'Clients';
-                content.innerHTML = `
-                    <div class="mb-6">
-                        <div class="relative">
-                            <input type="text" id="search-clients" placeholder="Search clients by name or email..." class="w-full pl-10 pr-4 py-2 bg-gray-900/50 border border-white/20 rounded-lg shadow-sm focus:outline-none focus:ring-2">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                    <div class="space-y-8">
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Notes</h3>
+                            <div id="notes-list" class="space-y-3 max-h-60 overflow-y-auto pr-2 mb-4">
+                                ${client.notes && client.notes.length > 0 ? [...client.notes].reverse().map(note => `
+                                    <div class="text-sm border-l-2 border-amber-400 pl-3">
+                                        <p class="text-gray-300">${note.text}</p>
+                                        <p class="text-xs text-gray-500 mt-1">${new Date(note.date.toDate()).toLocaleString()}</p>
+                                    </div>`).join('') : '<p class="text-sm text-gray-500">No notes yet.</p>'}
                             </div>
+                            <form id="add-note-form" data-id="${client.id}" class="flex space-x-2">
+                                <input type="text" name="note" placeholder="Add a new note..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md text-sm focus:outline-none focus:ring-2">
+                                <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="send" class="w-5 h-5"></i></button>
+                            </form>
                         </div>
-                    </div>
-                    <div id="clients-list-container">
-                        ${renderClientsTable(filteredClients)}
-                    </div>
-                `;
-                lucide.createIcons();
-                document.getElementById('search-clients').addEventListener('input', handleSearch);
-            }
-            
-            function renderClientsTable(clientList) {
-                if (clientList.length === 0) {
-                    return `
-                        <div class="text-center py-16 card rounded-lg">
-                            <i data-lucide="users" class="w-16 h-16 mx-auto text-gray-500"></i>
-                            <h3 class="mt-4 text-xl font-semibold text-white">No clients found</h3>
-                            <p class="mt-2 text-gray-400">Your search returned no results, or you have no clients yet.</p>
-                        </div>
-                    `;
-                }
-                return `
-                    <div class="card rounded-lg overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-400">
-                                <thead class="text-xs text-gray-300 uppercase bg-black/30">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3">Name</th>
-                                        <th scope="col" class="px-6 py-3">Contact</th>
-                                        <th scope="col" class="px-6 py-3">Status</th>
-                                        <th scope="col" class="px-6 py-3">Project Status</th>
-                                        <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${clientList.map(client => `
-                                        <tr class="border-b border-white/10 hover:bg-white/5">
-                                            <td class="px-6 py-4 font-medium text-white whitespace-nowrap">${client.firstName} ${client.lastName}</td>
-                                            <td class="px-6 py-4">
-                                                <div>${client.email}</div>
-                                                <div class="text-xs text-gray-500">${client.phone}</div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span>
-                                            </td>
-                                            <td class="px-6 py-4">${client.projectStatus}</td>
-                                            <td class="px-6 py-4 text-right">
-                                                <a href="#client-detail/${client.id}" class="font-medium text-amber-400 hover:underline mr-4">View</a>
-                                                <button data-id="${client.id}" class="delete-client-btn font-medium text-red-500 hover:underline">Delete</button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            }
-
-            function renderClientDetail() {
-                const id = parseInt(window.location.hash.split('/')[1]);
-                const client = clients.find(c => c.id === id);
-
-                if (!client) {
-                    window.location.hash = '#clients';
-                    return;
-                }
-
-                pageTitle.textContent = `${client.firstName} ${client.lastName}`;
-                content.innerHTML = `
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 space-y-8">
-                            <div class="card p-6 rounded-lg">
-                                <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
-                                    <h3 class="text-xl font-semibold text-white">Contact Information</h3>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div><strong class="text-gray-400">Full Name:</strong> ${client.firstName} ${client.lastName}</div>
-                                    <div><strong class="text-gray-400">Status:</strong> <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span></div>
-                                    <div><strong class="text-gray-400">Email:</strong> <a href="mailto:${client.email}" class="text-amber-400 hover:underline">${client.email}</a></div>
-                                    <div><strong class="text-gray-400">Phone:</strong> ${client.phone}</div>
-                                </div>
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Tasks</h3>
+                            <div id="task-list" class="space-y-2 mb-4">
+                                ${client.tasks && client.tasks.length > 0 ? client.tasks.map((task, index) => `
+                                    <div class="flex items-center">
+                                        <input type="checkbox" data-client-id="${client.id}" data-task-index="${index}" ${task.completed ? 'checked' : ''} class="h-4 w-4 bg-transparent text-amber-500 border-gray-500 rounded focus:ring-amber-500">
+                                        <label class="ml-3 text-sm text-gray-300 ${task.completed ? 'line-through text-gray-500' : ''}">${task.text}</label>
+                                    </div>`).join('') : '<p class="text-sm text-gray-500">No tasks for this client.</p>'}
                             </div>
-                            <div class="card p-6 rounded-lg">
-                                <h3 class="text-xl font-semibold mb-4 border-b border-white/10 pb-2 text-white">Project Details</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div><strong class="text-gray-400">Project Status:</strong> ${client.projectStatus}</div>
-                                    <div><strong class="text-gray-400">Domain:</strong> realtor-john-doe.com</div>
-                                    <div><strong class="text-gray-400">Launch Date:</strong> Est. 2023-12-01</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-8">
-                            <div class="card p-6 rounded-lg">
-                                <h3 class="text-xl font-semibold mb-4 text-white">Notes</h3>
-                                <div id="notes-list" class="space-y-3 max-h-60 overflow-y-auto pr-2 mb-4">
-                                    ${client.notes.length > 0 ? client.notes.map(note => `
-                                        <div class="text-sm border-l-2 border-amber-400 pl-3">
-                                            <p class="text-gray-300">${note.text}</p>
-                                            <p class="text-xs text-gray-500 mt-1">${new Date(note.date).toLocaleString()}</p>
-                                        </div>
-                                    `).join('') : '<p class="text-sm text-gray-500">No notes yet.</p>'}
-                                </div>
-                                <form id="add-note-form" data-id="${client.id}" class="flex space-x-2">
-                                    <input type="text" name="note" placeholder="Add a new note..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2">
-                                    <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="send" class="w-5 h-5"></i></button>
-                                </form>
-                            </div>
-                            <div class="card p-6 rounded-lg">
-                                <h3 class="text-xl font-semibold mb-4 text-white">Tasks</h3>
-                                <div id="task-list" class="space-y-2 mb-4">
-                                    ${client.tasks.length > 0 ? client.tasks.map((task, index) => `
-                                        <div class="flex items-center">
-                                            <input type="checkbox" data-client-id="${client.id}" data-task-index="${index}" ${task.completed ? 'checked' : ''} class="h-4 w-4 bg-transparent text-amber-500 border-gray-500 rounded focus:ring-amber-500">
-                                            <label class="ml-3 text-sm text-gray-300 ${task.completed ? 'line-through text-gray-500' : ''}">${task.text}</label>
-                                        </div>
-                                    `).join('') : '<p class="text-sm text-gray-500">No tasks for this client.</p>'}
-                                </div>
-                                <form id="add-task-form" data-id="${client.id}" class="flex space-x-2">
-                                    <input type="text" name="task" placeholder="Add a new task..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2">
-                                    <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                                </form>
-                            </div>
+                            <form id="add-task-form" data-id="${client.id}" class="flex space-x-2">
+                                <input type="text" name="task" placeholder="Add a new task..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md text-sm focus:outline-none focus:ring-2">
+                                <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                            </form>
                         </div>
                     </div>
-                `;
-                lucide.createIcons();
-            }
+                </div>`;
+        }
+        
+        function renderSettings() {
+            pageTitle.textContent = 'Settings';
+            content.innerHTML = `<div class="card p-8 rounded-lg max-w-2xl mx-auto">
+                <h3 class="text-xl font-semibold mb-6 text-white">Application Settings</h3>
+                <p class="text-gray-400">Settings page is under construction. Future options for customizing your CRM experience will be available here.</p>
+            </div>`;
+        }
 
-            function renderSettings() {
-                pageTitle.textContent = 'Settings';
-                content.innerHTML = `
-                    <div class="card p-8 rounded-lg max-w-2xl mx-auto">
-                        <h3 class="text-xl font-semibold mb-6 text-white">Application Settings</h3>
-                        <p class="text-gray-400">Settings page is under construction. Future options for customizing your CRM experience will be available here.</p>
-                    </div>
-                `;
-            }
+        function getStatusColor(status) {
+            const colors = { 'Active Client': 'bg-green-500/20 text-green-300', 'Lead': 'bg-blue-500/20 text-blue-300', 'Past Client': 'bg-gray-500/20 text-gray-300' };
+            return colors[status] || 'bg-yellow-500/20 text-yellow-300';
+        }
 
-            function getStatusColor(status) {
-                switch (status) {
-                    case 'Active Client': return 'bg-green-500/20 text-green-300';
-                    case 'Lead': return 'bg-blue-500/20 text-blue-300';
-                    case 'Past Client': return 'bg-gray-500/20 text-gray-300';
-                    default: return 'bg-yellow-500/20 text-yellow-300';
-                }
-            }
-
-            function addLead(formData) {
-                const newLead = {
-                    id: clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1,
-                    firstName: formData.get('firstName'), lastName: formData.get('lastName'), email: formData.get('email'), phone: formData.get('phone'),
-                    status: 'Lead', projectStatus: 'New Lead', notes: [], tasks: []
-                };
-                clients.unshift(newLead);
-                activityLog.unshift({ text: `New lead added: ${newLead.firstName} ${newLead.lastName}.`, time: 'Just now' });
+        // --- DATA MANIPULATION ---
+        async function addLead(formData) {
+            const newLead = {
+                firstName: formData.get('firstName'), lastName: formData.get('lastName'), email: formData.get('email'), phone: formData.get('phone'),
+                status: 'Lead', projectStatus: 'New Lead', notes: [], tasks: [], createdAt: serverTimestamp()
+            };
+            try {
+                const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/clients`), newLead);
+                await addDoc(collection(db, `artifacts/${appId}/users/${userId}/activityLog`), { text: `New lead added: ${newLead.firstName} ${newLead.lastName}.`, createdAt: serverTimestamp() });
                 showToast(`Lead for ${newLead.firstName} added!`, 'success');
-                if (window.location.hash === '#clients') renderClients();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                showToast('Failed to add lead.', 'error');
             }
-            
-            function deleteClient(id) {
-                const client = clients.find(c => c.id === id);
-                showConfirmationModal(
-                    'Delete Client',
-                    `Are you sure you want to delete ${client.firstName} ${client.lastName}?`,
-                    () => {
-                        clients = clients.filter(c => c.id !== id);
-                        activityLog.unshift({ text: `Client removed: ${client.firstName} ${client.lastName}.`, time: 'Just now' });
-                        showToast('Client deleted.', 'success');
-                        window.location.hash = '#clients';
-                    }
-                );
-            }
-            
-            function handleSearch(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const filtered = clients.filter(c => 
-                    `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm) ||
-                    c.email.toLowerCase().includes(searchTerm)
-                );
-                document.getElementById('clients-list-container').innerHTML = renderClientsTable(filtered);
-                lucide.createIcons();
-            }
-            
-            document.body.addEventListener('click', (e) => {
-                if (e.target.closest('.delete-client-btn')) deleteClient(parseInt(e.target.closest('.delete-client-btn').dataset.id));
-                if (e.target.matches('input[type="checkbox"]')) {
-                    const client = clients.find(c => c.id === parseInt(e.target.dataset.clientId));
-                    if (client) {
-                        client.tasks[parseInt(e.target.dataset.taskIndex)].completed = e.target.checked;
-                        renderClientDetail();
-                    }
+        }
+        
+        async function deleteClient(id) {
+            const client = clients.find(c => c.id === id);
+            showConfirmationModal('Delete Client', `Are you sure you want to delete ${client.firstName} ${client.lastName}?`, async () => {
+                try {
+                    await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/clients`, id));
+                    await addDoc(collection(db, `artifacts/${appId}/users/${userId}/activityLog`), { text: `Client removed: ${client.firstName} ${client.lastName}.`, createdAt: serverTimestamp() });
+                    showToast('Client deleted.', 'success');
+                    window.location.hash = '#clients';
+                } catch (e) {
+                    console.error("Error deleting document: ", e);
+                    showToast('Failed to delete client.', 'error');
                 }
             });
-            
-            document.body.addEventListener('submit', (e) => {
-                const form = e.target;
-                if (form.id === 'add-note-form' || form.id === 'add-task-form') {
-                    e.preventDefault();
-                    const client = clients.find(c => c.id === parseInt(form.dataset.id));
-                    if(client) {
-                        if (form.id === 'add-note-form') client.notes.unshift({ text: form.elements.note.value, date: new Date().toISOString() });
-                        if (form.id === 'add-task-form') client.tasks.push({ text: form.elements.task.value, completed: false });
-                        renderClientDetail();
-                    }
+        }
+        
+        // --- EVENT HANDLERS ---
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = clients.filter(c => `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm) || c.email.toLowerCase().includes(searchTerm));
+            document.getElementById('clients-list-container').innerHTML = renderClientsTable(filtered);
+            lucide.createIcons();
+        }
+        
+        document.body.addEventListener('click', async (e) => {
+            if (e.target.closest('.delete-client-btn')) {
+                deleteClient(e.target.closest('.delete-client-btn').dataset.id);
+            }
+            if (e.target.matches('input[type="checkbox"]')) {
+                const clientId = e.target.dataset.clientId;
+                const taskIndex = parseInt(e.target.dataset.taskIndex);
+                const client = clients.find(c => c.id === clientId);
+                if (client) {
+                    const updatedTasks = [...client.tasks];
+                    updatedTasks[taskIndex].completed = e.target.checked;
+                    const clientRef = doc(db, `artifacts/${appId}/users/${userId}/clients`, clientId);
+                    await updateDoc(clientRef, { tasks: updatedTasks });
                 }
-            });
-
-            const addLeadModal = document.getElementById('add-lead-modal');
-            const addLeadBtn = document.getElementById('add-lead-btn');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const addLeadForm = document.getElementById('add-lead-form');
-
-            function openModal(modalEl) {
-                modalEl.classList.remove('hidden');
-                setTimeout(() => {
-                    modalEl.classList.remove('opacity-0');
-                    modalEl.querySelector('.modal-content').classList.remove('scale-95');
-                }, 10);
             }
-
-            function closeModal(modalEl) {
-                modalEl.classList.add('opacity-0');
-                modalEl.querySelector('.modal-content').classList.add('scale-95');
-                setTimeout(() => modalEl.classList.add('hidden'), 300);
-            }
-            
-            addLeadBtn.addEventListener('click', () => openModal(addLeadModal));
-            closeModalBtn.addEventListener('click', () => closeModal(addLeadModal));
-            addLeadModal.addEventListener('click', (e) => { if (e.target === addLeadModal) closeModal(addLeadModal); });
-            addLeadForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                addLead(new FormData(addLeadForm));
-                addLeadForm.reset();
-                closeModal(addLeadModal);
-            });
-
-            const confirmationModal = document.getElementById('confirmation-modal');
-            function showConfirmationModal(title, message, onConfirm) {
-                document.getElementById('confirmation-title').textContent = title;
-                document.getElementById('confirmation-message').textContent = message;
-                openModal(confirmationModal);
-
-                const confirmBtn = document.getElementById('confirm-action-btn');
-                const cancelBtn = document.getElementById('confirm-cancel-btn');
-
-                const confirmHandler = () => { onConfirm(); closeModal(confirmationModal); cleanup(); };
-                const cancelHandler = () => { closeModal(confirmationModal); cleanup(); };
-                const cleanup = () => {
-                    confirmBtn.removeEventListener('click', confirmHandler);
-                    cancelBtn.removeEventListener('click', cancelHandler);
-                };
-
-                confirmBtn.addEventListener('click', confirmHandler);
-                cancelBtn.addEventListener('click', cancelHandler);
-            }
-
-            function showToast(message, type = 'info') {
-                const toastContainer = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                const colors = {
-                    success: 'bg-green-600', error: 'bg-red-600', info: 'bg-blue-600'
-                };
-                toast.className = `toast transform translate-x-full opacity-0 ${colors[type]} text-white py-2 px-4 rounded-lg shadow-lg flex items-center`;
-                toast.innerHTML = `<p>${message}</p>`;
-                toastContainer.appendChild(toast);
-                
-                setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
-                setTimeout(() => {
-                    toast.classList.add('opacity-0');
-                    toast.addEventListener('transitionend', () => toast.remove());
-                }, 3000);
-            }
-
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menu-toggle');
-            menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
-            
-            window.addEventListener('hashchange', navigate);
-            navigate();
         });
+        
+        document.body.addEventListener('submit', async (e) => {
+            const form = e.target;
+            if (form.id === 'add-note-form' || form.id === 'add-task-form') {
+                e.preventDefault();
+                const clientId = form.dataset.id;
+                const client = clients.find(c => c.id === clientId);
+                if(client) {
+                    const clientRef = doc(db, `artifacts/${appId}/users/${userId}/clients`, clientId);
+                    if (form.id === 'add-note-form') {
+                        const updatedNotes = [...(client.notes || []), { text: form.elements.note.value, date: new Date() }];
+                        await updateDoc(clientRef, { notes: updatedNotes });
+                    }
+                    if (form.id === 'add-task-form') {
+                        const updatedTasks = [...(client.tasks || []), { text: form.elements.task.value, completed: false }];
+                        await updateDoc(clientRef, { tasks: updatedTasks });
+                    }
+                    form.reset();
+                }
+            }
+        });
+
+        // --- UI COMPONENTS (MODALS, TOASTS) ---
+        const addLeadModal = document.getElementById('add-lead-modal');
+        const addLeadBtn = document.getElementById('add-lead-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const addLeadForm = document.getElementById('add-lead-form');
+
+        function openModal(modalEl) { modalEl.classList.remove('hidden'); setTimeout(() => { modalEl.classList.remove('opacity-0'); modalEl.querySelector('.modal-content').classList.remove('scale-95'); }, 10); }
+        function closeModal(modalEl) { modalEl.classList.add('opacity-0'); modalEl.querySelector('.modal-content').classList.add('scale-95'); setTimeout(() => modalEl.classList.add('hidden'), 300); }
+        
+        addLeadBtn.addEventListener('click', () => openModal(addLeadModal));
+        closeModalBtn.addEventListener('click', () => closeModal(addLeadModal));
+        addLeadModal.addEventListener('click', (e) => { if (e.target === addLeadModal) closeModal(addLeadModal); });
+        addLeadForm.addEventListener('submit', (e) => { e.preventDefault(); addLead(new FormData(addLeadForm)); addLeadForm.reset(); closeModal(addLeadModal); });
+
+        const confirmationModal = document.getElementById('confirmation-modal');
+        function showConfirmationModal(title, message, onConfirm) {
+            document.getElementById('confirmation-title').textContent = title;
+            document.getElementById('confirmation-message').textContent = message;
+            openModal(confirmationModal);
+            const confirmBtn = document.getElementById('confirm-action-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+            const confirmHandler = () => { onConfirm(); closeModal(confirmationModal); cleanup(); };
+            const cancelHandler = () => { closeModal(confirmationModal); cleanup(); };
+            const cleanup = () => { confirmBtn.removeEventListener('click', confirmHandler); cancelBtn.removeEventListener('click', cancelHandler); };
+            confirmBtn.addEventListener('click', confirmHandler);
+            cancelBtn.addEventListener('click', cancelHandler);
+        }
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = { success: 'bg-green-600', error: 'bg-red-600', info: 'bg-blue-600' };
+            toast.className = `toast transform translate-x-full opacity-0 ${colors[type]} text-white py-2 px-4 rounded-lg shadow-lg flex items-center`;
+            toast.innerHTML = `<p>${message}</p>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
+            setTimeout(() => { toast.classList.add('opacity-0'); toast.addEventListener('transitionend', () => toast.remove()); }, 3000);
+        }
+
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+        
+        window.addEventListener('hashchange', navigate);
+        initFirebase();
     </script>
 </body>
 </html>
