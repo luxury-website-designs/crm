@@ -12,6 +12,9 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.1), transparent 50%);
         }
         .sidebar {
             transition: transform 0.3s ease-in-out;
@@ -30,51 +33,61 @@
         .modal-content, .toast {
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
-        /* Scrollbar styling for a more premium feel */
+        /* Custom scrollbar for a premium feel */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #1a1a1a;
         }
         ::-webkit-scrollbar-thumb {
-            background: #a8a8a8;
+            background: #4a4a4a;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #d4af37; /* Gold hover */
+        }
+        /* Glassmorphism effect for cards */
+        .card {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Custom focus rings */
+        input:focus, select:focus, textarea:focus {
+            --tw-ring-color: #d4af37 !important;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="text-gray-200">
 
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-30 w-64 bg-gray-800 text-white flex-shrink-0 flex flex-col">
-            <div class="h-20 flex items-center justify-center bg-gray-900">
+        <aside id="sidebar" class="sidebar absolute md:relative z-30 w-64 bg-black/80 backdrop-blur-lg border-r border-white/10 flex-shrink-0 flex flex-col">
+            <div class="h-20 flex items-center justify-center border-b border-white/10">
                 <h1 class="text-2xl font-bold text-white tracking-wider">
-                    <span class="text-yellow-400">Spark</span>Designs
+                    <span class="text-amber-400">Spark</span>Designs
                 </h1>
             </div>
             <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#dashboard" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors duration-200">
+                <a href="#dashboard" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors duration-200">
                     <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
                     Dashboard
                 </a>
-                <a href="#clients" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors duration-200">
+                <a href="#clients" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors duration-200">
                     <i data-lucide="users" class="w-5 h-5 mr-3"></i>
                     Clients
                 </a>
-                <a href="#settings" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors duration-200">
+                <a href="#settings" class="nav-link flex items-center px-4 py-2 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors duration-200">
                     <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
                     Settings
                 </a>
             </nav>
-            <div class="p-4 border-t border-gray-700">
+            <div class="p-4 border-t border-white/10">
                 <div class="flex items-center">
-                    <img src="https://placehold.co/40x40/F59E0B/FFFFFF?text=SD" alt="User Avatar" class="w-10 h-10 rounded-full">
+                    <img src="https://placehold.co/40x40/D4AF37/0a0a0a?text=SD" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-amber-400">
                     <div class="ml-3">
-                        <p class="font-semibold text-sm">Admin User</p>
+                        <p class="font-semibold text-sm text-white">Admin User</p>
                         <p class="text-xs text-gray-400">Spark Designs Team</p>
                     </div>
                 </div>
@@ -84,15 +97,15 @@
         <!-- Main Content -->
         <main class="flex-1 flex flex-col overflow-y-auto">
             <!-- Header -->
-            <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-20">
+            <header class="h-20 bg-black/50 backdrop-blur-lg border-b border-white/10 flex items-center justify-between px-6 sticky top-0 z-20">
                 <div class="flex items-center">
-                    <button id="menu-toggle" class="md:hidden mr-4 text-gray-600">
+                    <button id="menu-toggle" class="md:hidden mr-4 text-gray-300">
                         <i data-lucide="menu" class="w-6 h-6"></i>
                     </button>
-                    <h2 id="page-title" class="text-2xl font-semibold text-gray-800">Dashboard</h2>
+                    <h2 id="page-title" class="text-2xl font-semibold text-white">Dashboard</h2>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button id="add-lead-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg flex items-center transition-colors duration-200 shadow-sm">
+                    <button id="add-lead-btn" class="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 px-4 rounded-lg flex items-center transition-colors duration-200 shadow-lg shadow-amber-500/20">
                         <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
                         Add New Lead
                     </button>
@@ -107,48 +120,48 @@
     </div>
     
     <!-- Add Lead Modal -->
-    <div id="add-lead-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 z-40">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md p-6 transform scale-95">
-            <div class="flex justify-between items-center pb-3 border-b">
-                <h3 class="text-xl font-semibold">Add New Lead</h3>
-                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800">
+    <div id="add-lead-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden opacity-0 z-40">
+        <div class="modal-content card rounded-lg shadow-xl w-full max-w-md p-6 transform scale-95">
+            <div class="flex justify-between items-center pb-3 border-b border-white/10">
+                <h3 class="text-xl font-semibold text-white">Add New Lead</h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
             <form id="add-lead-form" class="mt-4 space-y-4">
                 <div>
-                    <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm">
+                    <label for="firstName" class="block text-sm font-medium text-gray-300">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
                 </div>
                 <div>
-                    <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm">
+                    <label for="lastName" class="block text-sm font-medium text-gray-300">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
                 </div>
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm">
+                    <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                    <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
                 </div>
                 <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="tel" id="phone" name="phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm">
+                    <label for="phone" class="block text-sm font-medium text-gray-300">Phone</label>
+                    <input type="tel" id="phone" name="phone" class="mt-1 block w-full px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm focus:outline-none focus:ring-2 sm:text-sm">
                 </div>
                 <div class="flex justify-end pt-4">
-                    <button type="submit" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200">Save Lead</button>
+                    <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 px-6 rounded-lg transition-colors duration-200">Save Lead</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden opacity-0 z-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-sm p-6 transform scale-95 text-center">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
+    <div id="confirmation-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden opacity-0 z-50">
+        <div class="modal-content card rounded-lg shadow-xl w-full max-w-sm p-6 transform scale-95 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-500/20">
+                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-400"></i>
             </div>
-            <h3 id="confirmation-title" class="text-lg font-medium text-gray-900 mt-5">Delete Client</h3>
-            <p id="confirmation-message" class="text-sm text-gray-500 mt-2">Are you sure you want to delete this client? This action cannot be undone.</p>
+            <h3 id="confirmation-title" class="text-lg font-medium text-white mt-5">Delete Client</h3>
+            <p id="confirmation-message" class="text-sm text-gray-400 mt-2">Are you sure? This action cannot be undone.</p>
             <div class="mt-6 flex justify-center space-x-4">
-                <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
+                <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500">Cancel</button>
                 <button id="confirm-action-btn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
             </div>
         </div>
@@ -188,12 +201,11 @@
                 const routeKey = hash.split('/')[0];
                 const route = routes[routeKey] || renderDashboard;
                 
-                // Highlight active nav link
                 document.querySelectorAll('.nav-link').forEach(link => {
                     if (link.getAttribute('href').startsWith(routeKey)) {
-                        link.classList.add('bg-gray-700', 'text-white');
+                        link.classList.add('bg-white/10', 'text-white');
                     } else {
-                        link.classList.remove('bg-gray-700', 'text-white');
+                        link.classList.remove('bg-white/10', 'text-white');
                     }
                 });
                 
@@ -204,57 +216,56 @@
                 pageTitle.textContent = 'Dashboard';
                 content.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- KPI Cards -->
-                        <div class="bg-white p-6 rounded-lg shadow-md flex items-center hover:shadow-lg transition-shadow">
-                            <div class="bg-blue-100 p-3 rounded-full"><i data-lucide="user-plus" class="w-6 h-6 text-blue-800"></i></div>
+                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="user-plus" class="w-6 h-6 text-amber-400"></i></div>
                             <div class="ml-4">
-                                <p class="text-gray-500 text-sm">New Leads This Month</p>
-                                <p class="text-2xl font-bold">12</p>
+                                <p class="text-gray-400 text-sm">New Leads This Month</p>
+                                <p class="text-2xl font-bold text-white">12</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md flex items-center hover:shadow-lg transition-shadow">
-                            <div class="bg-green-100 p-3 rounded-full"><i data-lucide="users" class="w-6 h-6 text-green-800"></i></div>
+                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="users" class="w-6 h-6 text-amber-400"></i></div>
                             <div class="ml-4">
-                                <p class="text-gray-500 text-sm">Active Clients</p>
-                                <p class="text-2xl font-bold">${clients.filter(c => c.status === 'Active Client').length}</p>
+                                <p class="text-gray-400 text-sm">Active Clients</p>
+                                <p class="text-2xl font-bold text-white">${clients.filter(c => c.status === 'Active Client').length}</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md flex items-center hover:shadow-lg transition-shadow">
-                            <div class="bg-yellow-100 p-3 rounded-full"><i data-lucide="briefcase" class="w-6 h-6 text-yellow-800"></i></div>
+                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="briefcase" class="w-6 h-6 text-amber-400"></i></div>
                             <div class="ml-4">
-                                <p class="text-gray-500 text-sm">Projects In Progress</p>
-                                <p class="text-2xl font-bold">${clients.filter(c => c.projectStatus === 'In Progress' || c.projectStatus === 'Development').length}</p>
+                                <p class="text-gray-400 text-sm">Projects In Progress</p>
+                                <p class="text-2xl font-bold text-white">${clients.filter(c => c.projectStatus === 'In Progress' || c.projectStatus === 'Development').length}</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md flex items-center hover:shadow-lg transition-shadow">
-                            <div class="bg-red-100 p-3 rounded-full"><i data-lucide="dollar-sign" class="w-6 h-6 text-red-800"></i></div>
+                        <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
+                            <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="dollar-sign" class="w-6 h-6 text-amber-400"></i></div>
                             <div class="ml-4">
-                                <p class="text-gray-500 text-sm">Monthly Recurring Revenue</p>
-                                <p class="text-2xl font-bold">$5,250</p>
+                                <p class="text-gray-400 text-sm">Monthly Recurring Revenue</p>
+                                <p class="text-2xl font-bold text-white">$5,250</p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold mb-4">Lead Pipeline</h3>
+                        <div class="lg:col-span-2 card p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Lead Pipeline</h3>
                             <div class="space-y-4">
                                 ${renderPipelineStage('New Lead', 3, 'bg-blue-500')}
                                 ${renderPipelineStage('Contacted', 5, 'bg-cyan-500')}
-                                ${renderPipelineStage('Proposal Sent', 4, 'bg-yellow-500')}
+                                ${renderPipelineStage('Proposal Sent', 4, 'bg-amber-500')}
                                 ${renderPipelineStage('Negotiation', 1, 'bg-orange-500')}
                                 ${renderPipelineStage('Closed - Won', 2, 'bg-green-500')}
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold mb-4">Recent Activity</h3>
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Recent Activity</h3>
                             <div class="space-y-4">
                                 ${activityLog.map(activity => `
                                     <div class="flex items-start">
-                                        <div class="bg-gray-200 p-2 rounded-full mr-3 mt-1"><i data-lucide="history" class="w-4 h-4 text-gray-600"></i></div>
+                                        <div class="bg-gray-700 p-2 rounded-full mr-3 mt-1"><i data-lucide="history" class="w-4 h-4 text-gray-300"></i></div>
                                         <div>
-                                            <p class="text-sm text-gray-800">${activity.text}</p>
-                                            <p class="text-xs text-gray-400">${activity.time}</p>
+                                            <p class="text-sm text-gray-200">${activity.text}</p>
+                                            <p class="text-xs text-gray-500">${activity.time}</p>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -266,14 +277,14 @@
             }
             
             function renderPipelineStage(name, count, colorClass) {
-                const percentage = (count / 15) * 100; // Assuming 15 total leads in pipeline for visual
+                const percentage = (count / 15) * 100;
                 return `
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-sm font-medium text-gray-600">${name}</span>
-                            <span class="text-sm font-bold text-gray-800">${count}</span>
+                            <span class="text-sm font-medium text-gray-400">${name}</span>
+                            <span class="text-sm font-bold text-white">${count}</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
                             <div class="${colorClass} h-2.5 rounded-full" style="width: ${percentage}%"></div>
                         </div>
                     </div>
@@ -285,7 +296,7 @@
                 content.innerHTML = `
                     <div class="mb-6">
                         <div class="relative">
-                            <input type="text" id="search-clients" placeholder="Search clients by name or email..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                            <input type="text" id="search-clients" placeholder="Search clients by name or email..." class="w-full pl-10 pr-4 py-2 bg-gray-900/50 border border-white/20 rounded-lg shadow-sm focus:outline-none focus:ring-2">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
                             </div>
@@ -302,18 +313,18 @@
             function renderClientsTable(clientList) {
                 if (clientList.length === 0) {
                     return `
-                        <div class="text-center py-16 bg-white rounded-lg shadow-md">
-                            <i data-lucide="users" class="w-16 h-16 mx-auto text-gray-400"></i>
-                            <h3 class="mt-4 text-xl font-semibold">No clients found</h3>
-                            <p class="mt-2 text-gray-500">Your search returned no results, or you have no clients yet.</p>
+                        <div class="text-center py-16 card rounded-lg">
+                            <i data-lucide="users" class="w-16 h-16 mx-auto text-gray-500"></i>
+                            <h3 class="mt-4 text-xl font-semibold text-white">No clients found</h3>
+                            <p class="mt-2 text-gray-400">Your search returned no results, or you have no clients yet.</p>
                         </div>
                     `;
                 }
                 return `
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="card rounded-lg overflow-hidden">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-gray-500">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <table class="w-full text-sm text-left text-gray-400">
+                                <thead class="text-xs text-gray-300 uppercase bg-black/30">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">Name</th>
                                         <th scope="col" class="px-6 py-3">Contact</th>
@@ -322,10 +333,10 @@
                                         <th scope="col" class="px-6 py-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="clients-table-body">
+                                <tbody>
                                     ${clientList.map(client => `
-                                        <tr class="bg-white border-b hover:bg-gray-50">
-                                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${client.firstName} ${client.lastName}</td>
+                                        <tr class="border-b border-white/10 hover:bg-white/5">
+                                            <td class="px-6 py-4 font-medium text-white whitespace-nowrap">${client.firstName} ${client.lastName}</td>
                                             <td class="px-6 py-4">
                                                 <div>${client.email}</div>
                                                 <div class="text-xs text-gray-500">${client.phone}</div>
@@ -335,8 +346,8 @@
                                             </td>
                                             <td class="px-6 py-4">${client.projectStatus}</td>
                                             <td class="px-6 py-4 text-right">
-                                                <a href="#client-detail/${client.id}" class="view-client-btn font-medium text-blue-800 hover:underline mr-4">View</a>
-                                                <button data-id="${client.id}" class="delete-client-btn font-medium text-red-600 hover:underline">Delete</button>
+                                                <a href="#client-detail/${client.id}" class="font-medium text-amber-400 hover:underline mr-4">View</a>
+                                                <button data-id="${client.id}" class="delete-client-btn font-medium text-red-500 hover:underline">Delete</button>
                                             </td>
                                         </tr>
                                     `).join('')}
@@ -360,62 +371,55 @@
                 content.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-8">
-                            <!-- Contact Info -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="flex justify-between items-center mb-4 border-b pb-2">
-                                    <h3 class="text-xl font-semibold">Contact Information</h3>
-                                    <button data-id="${client.id}" class="delete-client-btn-detail bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-2 px-3 rounded-lg flex items-center transition-colors duration-200">
-                                        <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i> Delete Client
-                                    </button>
+                            <div class="card p-6 rounded-lg">
+                                <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+                                    <h3 class="text-xl font-semibold text-white">Contact Information</h3>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div><strong class="text-gray-600">Full Name:</strong> ${client.firstName} ${client.lastName}</div>
-                                    <div><strong class="text-gray-600">Status:</strong> <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span></div>
-                                    <div><strong class="text-gray-600">Email:</strong> <a href="mailto:${client.email}" class="text-blue-800 hover:underline">${client.email}</a></div>
-                                    <div><strong class="text-gray-600">Phone:</strong> ${client.phone}</div>
+                                    <div><strong class="text-gray-400">Full Name:</strong> ${client.firstName} ${client.lastName}</div>
+                                    <div><strong class="text-gray-400">Status:</strong> <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(client.status)}">${client.status}</span></div>
+                                    <div><strong class="text-gray-400">Email:</strong> <a href="mailto:${client.email}" class="text-amber-400 hover:underline">${client.email}</a></div>
+                                    <div><strong class="text-gray-400">Phone:</strong> ${client.phone}</div>
                                 </div>
                             </div>
-                            <!-- Project Details -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold mb-4 border-b pb-2">Project Details</h3>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="text-xl font-semibold mb-4 border-b border-white/10 pb-2 text-white">Project Details</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div><strong class="text-gray-600">Project Status:</strong> ${client.projectStatus}</div>
-                                    <div><strong class="text-gray-600">Domain:</strong> realtor-john-doe.com</div>
-                                    <div><strong class="text-gray-600">Launch Date:</strong> Est. 2023-12-01</div>
+                                    <div><strong class="text-gray-400">Project Status:</strong> ${client.projectStatus}</div>
+                                    <div><strong class="text-gray-400">Domain:</strong> realtor-john-doe.com</div>
+                                    <div><strong class="text-gray-400">Launch Date:</strong> Est. 2023-12-01</div>
                                 </div>
                             </div>
                         </div>
                         <div class="space-y-8">
-                             <!-- Notes -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold mb-4">Notes</h3>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="text-xl font-semibold mb-4 text-white">Notes</h3>
                                 <div id="notes-list" class="space-y-3 max-h-60 overflow-y-auto pr-2 mb-4">
                                     ${client.notes.length > 0 ? client.notes.map(note => `
-                                        <div class="text-sm border-l-2 border-yellow-400 pl-3">
-                                            <p class="text-gray-700">${note.text}</p>
-                                            <p class="text-xs text-gray-400 mt-1">${new Date(note.date).toLocaleString()}</p>
+                                        <div class="text-sm border-l-2 border-amber-400 pl-3">
+                                            <p class="text-gray-300">${note.text}</p>
+                                            <p class="text-xs text-gray-500 mt-1">${new Date(note.date).toLocaleString()}</p>
                                         </div>
                                     `).join('') : '<p class="text-sm text-gray-500">No notes yet.</p>'}
                                 </div>
                                 <form id="add-note-form" data-id="${client.id}" class="flex space-x-2">
-                                    <input type="text" name="note" placeholder="Add a new note..." required class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
-                                    <button type="submit" class="bg-blue-800 text-white p-2 rounded-md hover:bg-blue-900"><i data-lucide="send" class="w-5 h-5"></i></button>
+                                    <input type="text" name="note" placeholder="Add a new note..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2">
+                                    <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="send" class="w-5 h-5"></i></button>
                                 </form>
                             </div>
-                             <!-- Tasks -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold mb-4">Tasks</h3>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="text-xl font-semibold mb-4 text-white">Tasks</h3>
                                 <div id="task-list" class="space-y-2 mb-4">
                                     ${client.tasks.length > 0 ? client.tasks.map((task, index) => `
                                         <div class="flex items-center">
-                                            <input type="checkbox" data-client-id="${client.id}" data-task-index="${index}" ${task.completed ? 'checked' : ''} class="h-4 w-4 text-blue-800 border-gray-300 rounded focus:ring-blue-700">
-                                            <label class="ml-2 text-sm text-gray-700 ${task.completed ? 'line-through text-gray-500' : ''}">${task.text}</label>
+                                            <input type="checkbox" data-client-id="${client.id}" data-task-index="${index}" ${task.completed ? 'checked' : ''} class="h-4 w-4 bg-transparent text-amber-500 border-gray-500 rounded focus:ring-amber-500">
+                                            <label class="ml-3 text-sm text-gray-300 ${task.completed ? 'line-through text-gray-500' : ''}">${task.text}</label>
                                         </div>
                                     `).join('') : '<p class="text-sm text-gray-500">No tasks for this client.</p>'}
                                 </div>
                                 <form id="add-task-form" data-id="${client.id}" class="flex space-x-2">
-                                    <input type="text" name="task" placeholder="Add a new task..." required class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
-                                    <button type="submit" class="bg-blue-800 text-white p-2 rounded-md hover:bg-blue-900"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                                    <input type="text" name="task" placeholder="Add a new task..." required class="flex-grow px-3 py-2 bg-gray-900/50 border border-white/20 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2">
+                                    <button type="submit" class="bg-amber-500 text-black p-2 rounded-md hover:bg-amber-600"><i data-lucide="plus" class="w-5 h-5"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -427,115 +431,83 @@
             function renderSettings() {
                 pageTitle.textContent = 'Settings';
                 content.innerHTML = `
-                    <div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-                        <h3 class="text-xl font-semibold mb-6">Application Settings</h3>
-                        <p class="text-gray-600">Settings page is under construction. Future options for customizing your CRM experience will be available here.</p>
+                    <div class="card p-8 rounded-lg max-w-2xl mx-auto">
+                        <h3 class="text-xl font-semibold mb-6 text-white">Application Settings</h3>
+                        <p class="text-gray-400">Settings page is under construction. Future options for customizing your CRM experience will be available here.</p>
                     </div>
                 `;
             }
 
             function getStatusColor(status) {
                 switch (status) {
-                    case 'Active Client': return 'bg-green-100 text-green-800';
-                    case 'Lead': return 'bg-blue-100 text-blue-800';
-                    case 'Past Client': return 'bg-gray-200 text-gray-800';
-                    default: return 'bg-yellow-100 text-yellow-800';
+                    case 'Active Client': return 'bg-green-500/20 text-green-300';
+                    case 'Lead': return 'bg-blue-500/20 text-blue-300';
+                    case 'Past Client': return 'bg-gray-500/20 text-gray-300';
+                    default: return 'bg-yellow-500/20 text-yellow-300';
                 }
             }
 
-            // --- DATA MANIPULATION ---
             function addLead(formData) {
                 const newLead = {
                     id: clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1,
-                    firstName: formData.get('firstName'),
-                    lastName: formData.get('lastName'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    status: 'Lead',
-                    projectStatus: 'New Lead',
-                    notes: [],
-                    tasks: []
+                    firstName: formData.get('firstName'), lastName: formData.get('lastName'), email: formData.get('email'), phone: formData.get('phone'),
+                    status: 'Lead', projectStatus: 'New Lead', notes: [], tasks: []
                 };
                 clients.unshift(newLead);
                 activityLog.unshift({ text: `New lead added: ${newLead.firstName} ${newLead.lastName}.`, time: 'Just now' });
-                showToast(`Lead for ${newLead.firstName} added successfully!`, 'success');
-                if (window.location.hash === '#clients') {
-                    renderClients();
-                }
+                showToast(`Lead for ${newLead.firstName} added!`, 'success');
+                if (window.location.hash === '#clients') renderClients();
             }
             
             function deleteClient(id) {
                 const client = clients.find(c => c.id === id);
                 showConfirmationModal(
                     'Delete Client',
-                    `Are you sure you want to delete ${client.firstName} ${client.lastName}? This action cannot be undone.`,
+                    `Are you sure you want to delete ${client.firstName} ${client.lastName}?`,
                     () => {
                         clients = clients.filter(c => c.id !== id);
                         activityLog.unshift({ text: `Client removed: ${client.firstName} ${client.lastName}.`, time: 'Just now' });
-                        showToast('Client deleted successfully.', 'success');
+                        showToast('Client deleted.', 'success');
                         window.location.hash = '#clients';
                     }
                 );
             }
             
-            // --- EVENT HANDLERS ---
             function handleSearch(e) {
                 const searchTerm = e.target.value.toLowerCase();
-                const filtered = clients.filter(client => 
-                    client.firstName.toLowerCase().includes(searchTerm) ||
-                    client.lastName.toLowerCase().includes(searchTerm) ||
-                    client.email.toLowerCase().includes(searchTerm)
+                const filtered = clients.filter(c => 
+                    `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm) ||
+                    c.email.toLowerCase().includes(searchTerm)
                 );
-                const container = document.getElementById('clients-list-container');
-                container.innerHTML = renderClientsTable(filtered);
+                document.getElementById('clients-list-container').innerHTML = renderClientsTable(filtered);
                 lucide.createIcons();
             }
             
             document.body.addEventListener('click', (e) => {
-                if (e.target.closest('.delete-client-btn')) {
-                    const id = parseInt(e.target.closest('.delete-client-btn').dataset.id);
-                    deleteClient(id);
-                }
-                if (e.target.closest('.delete-client-btn-detail')) {
-                    const id = parseInt(e.target.closest('.delete-client-btn-detail').dataset.id);
-                    deleteClient(id);
-                }
+                if (e.target.closest('.delete-client-btn')) deleteClient(parseInt(e.target.closest('.delete-client-btn').dataset.id));
                 if (e.target.matches('input[type="checkbox"]')) {
-                    const clientId = parseInt(e.target.dataset.clientId);
-                    const taskIndex = parseInt(e.target.dataset.taskIndex);
-                    const client = clients.find(c => c.id === clientId);
+                    const client = clients.find(c => c.id === parseInt(e.target.dataset.clientId));
                     if (client) {
-                        client.tasks[taskIndex].completed = e.target.checked;
-                        renderClientDetail(); // Re-render to show strikethrough
+                        client.tasks[parseInt(e.target.dataset.taskIndex)].completed = e.target.checked;
+                        renderClientDetail();
                     }
                 }
             });
             
             document.body.addEventListener('submit', (e) => {
-                if (e.target.id === 'add-note-form') {
+                const form = e.target;
+                if (form.id === 'add-note-form' || form.id === 'add-task-form') {
                     e.preventDefault();
-                    const clientId = parseInt(e.target.dataset.id);
-                    const noteText = e.target.elements.note.value;
-                    const client = clients.find(c => c.id === clientId);
-                    if (client && noteText) {
-                        client.notes.unshift({ text: noteText, date: new Date().toISOString() });
-                        renderClientDetail();
-                    }
-                }
-                if (e.target.id === 'add-task-form') {
-                    e.preventDefault();
-                    const clientId = parseInt(e.target.dataset.id);
-                    const taskText = e.target.elements.task.value;
-                    const client = clients.find(c => c.id === clientId);
-                    if (client && taskText) {
-                        client.tasks.push({ text: taskText, completed: false });
+                    const client = clients.find(c => c.id === parseInt(form.dataset.id));
+                    if(client) {
+                        if (form.id === 'add-note-form') client.notes.unshift({ text: form.elements.note.value, date: new Date().toISOString() });
+                        if (form.id === 'add-task-form') client.tasks.push({ text: form.elements.task.value, completed: false });
                         renderClientDetail();
                     }
                 }
             });
 
-            // --- UI COMPONENTS (MODALS, TOASTS) ---
-            const modal = document.getElementById('add-lead-modal');
+            const addLeadModal = document.getElementById('add-lead-modal');
             const addLeadBtn = document.getElementById('add-lead-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const addLeadForm = document.getElementById('add-lead-form');
@@ -551,21 +523,17 @@
             function closeModal(modalEl) {
                 modalEl.classList.add('opacity-0');
                 modalEl.querySelector('.modal-content').classList.add('scale-95');
-                setTimeout(() => {
-                    modalEl.classList.add('hidden');
-                }, 300);
+                setTimeout(() => modalEl.classList.add('hidden'), 300);
             }
             
-            addLeadBtn.addEventListener('click', () => openModal(modal));
-            closeModalBtn.addEventListener('click', () => closeModal(modal));
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal(modal);
-            });
+            addLeadBtn.addEventListener('click', () => openModal(addLeadModal));
+            closeModalBtn.addEventListener('click', () => closeModal(addLeadModal));
+            addLeadModal.addEventListener('click', (e) => { if (e.target === addLeadModal) closeModal(addLeadModal); });
             addLeadForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 addLead(new FormData(addLeadForm));
                 addLeadForm.reset();
-                closeModal(modal);
+                closeModal(addLeadModal);
             });
 
             const confirmationModal = document.getElementById('confirmation-modal');
@@ -577,17 +545,8 @@
                 const confirmBtn = document.getElementById('confirm-action-btn');
                 const cancelBtn = document.getElementById('confirm-cancel-btn');
 
-                const confirmHandler = () => {
-                    onConfirm();
-                    closeModal(confirmationModal);
-                    cleanup();
-                };
-                
-                const cancelHandler = () => {
-                    closeModal(confirmationModal);
-                    cleanup();
-                };
-
+                const confirmHandler = () => { onConfirm(); closeModal(confirmationModal); cleanup(); };
+                const cancelHandler = () => { closeModal(confirmationModal); cleanup(); };
                 const cleanup = () => {
                     confirmBtn.removeEventListener('click', confirmHandler);
                     cancelBtn.removeEventListener('click', cancelHandler);
@@ -601,34 +560,25 @@
                 const toastContainer = document.getElementById('toast-container');
                 const toast = document.createElement('div');
                 const colors = {
-                    success: 'bg-green-500',
-                    error: 'bg-red-500',
-                    info: 'bg-blue-500'
+                    success: 'bg-green-600', error: 'bg-red-600', info: 'bg-blue-600'
                 };
                 toast.className = `toast transform translate-x-full opacity-0 ${colors[type]} text-white py-2 px-4 rounded-lg shadow-lg flex items-center`;
                 toast.innerHTML = `<p>${message}</p>`;
                 toastContainer.appendChild(toast);
                 
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-full', 'opacity-0');
-                }, 10);
-
+                setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
                 setTimeout(() => {
                     toast.classList.add('opacity-0');
                     toast.addEventListener('transitionend', () => toast.remove());
                 }, 3000);
             }
 
-            // --- MOBILE MENU ---
             const sidebar = document.getElementById('sidebar');
             const menuToggle = document.getElementById('menu-toggle');
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
-            });
+            menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
             
-            // --- INITIALIZATION ---
             window.addEventListener('hashchange', navigate);
-            navigate(); // Initial page load
+            navigate();
         });
     </script>
 </body>
