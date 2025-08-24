@@ -178,7 +178,18 @@
         // --- FIREBASE INITIALIZATION ---
         async function initFirebase() {
             try {
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                // **FIX:** Use a fallback for the firebaseConfig
+                const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+                const firebaseConfig = firebaseConfigFromEnv ? JSON.parse(firebaseConfigFromEnv) : {
+                    apiKey: "AIzaSyA8V4QexOGrrc_y-fp_zddkV4KGv29JaK8",
+                    authDomain: "spark-crm-9713d.firebaseapp.com",
+                    projectId: "spark-crm-9713d",
+                    storageBucket: "spark-crm-9713d.firebasestorage.app",
+                    messagingSenderId: "947178014135",
+                    appId: "1:947178014135:web:6b26a030466ed14946d432",
+                    measurementId: "G-THM42WS4JL"
+                };
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -191,9 +202,9 @@
                         setupRealtimeListeners();
                         navigate();
                     } else {
-                         // If __initial_auth_token is available, use it. Otherwise, sign in anonymously.
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(auth, __initial_auth_token);
+                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
                         } else {
                             await signInAnonymously(auth);
                         }
@@ -201,7 +212,8 @@
                 });
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
-                content.innerHTML = `<div class="text-center text-red-400">Error: Could not connect to the database.</div>`;
+                content.innerHTML = `<div class="text-center text-red-400">Error: Could not connect to the database. Please check your Firebase configuration.</div>`;
+                loadingState.style.display = 'none';
             }
         }
 
@@ -215,7 +227,7 @@
             unsubscribeClients = onSnapshot(clientsQuery, (snapshot) => {
                 clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 loadingState.style.display = 'none';
-                navigate(); // Re-render the current view with new data
+                navigate();
             }, (error) => {
                 console.error("Error fetching clients:", error);
                 loadingState.style.display = 'none';
@@ -237,7 +249,7 @@
         };
 
         function navigate() {
-            if (!userId) return; // Don't render if not authenticated
+            if (!userId) return;
             const hash = window.location.hash || '#dashboard';
             const routeKey = hash.split('/')[0];
             const route = routes[routeKey] || renderDashboard;
@@ -254,7 +266,6 @@
             pageTitle.textContent = 'Dashboard';
             content.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- KPI Cards -->
                     <div class="card p-6 rounded-lg flex items-center hover:border-amber-400/50 transition-all">
                         <div class="bg-amber-500/10 p-3 rounded-full"><i data-lucide="user-plus" class="w-6 h-6 text-amber-400"></i></div>
                         <div class="ml-4">
@@ -288,7 +299,6 @@
                     <div class="lg:col-span-2 card p-6 rounded-lg">
                         <h3 class="text-xl font-semibold mb-4 text-white">Lead Pipeline</h3>
                         <div class="space-y-4">
-                            <!-- Pipeline data would be calculated from client statuses -->
                             ${renderPipelineStage('New Lead', clients.filter(c=>c.status==='Lead').length, 'bg-blue-500')}
                             ${renderPipelineStage('Active', clients.filter(c=>c.status==='Active Client').length, 'bg-green-500')}
                             ${renderPipelineStage('Past', clients.filter(c=>c.status==='Past Client').length, 'bg-gray-500')}
@@ -302,7 +312,7 @@
                                     <div class="bg-gray-700 p-2 rounded-full mr-3 mt-1"><i data-lucide="history" class="w-4 h-4 text-gray-300"></i></div>
                                     <div>
                                         <p class="text-sm text-gray-200">${activity.text}</p>
-                                        <p class="text-xs text-gray-500">${new Date(activity.createdAt?.toDate()).toLocaleString()}</p>
+                                        <p class="text-xs text-gray-500">${activity.createdAt ? new Date(activity.createdAt.toDate()).toLocaleString() : 'Just now'}</p>
                                     </div>
                                 </div>
                             `).join('')}
@@ -404,7 +414,7 @@
                                 ${client.notes && client.notes.length > 0 ? [...client.notes].reverse().map(note => `
                                     <div class="text-sm border-l-2 border-amber-400 pl-3">
                                         <p class="text-gray-300">${note.text}</p>
-                                        <p class="text-xs text-gray-500 mt-1">${new Date(note.date.toDate()).toLocaleString()}</p>
+                                        <p class="text-xs text-gray-500 mt-1">${note.date ? new Date(note.date.toDate()).toLocaleString() : 'Just now'}</p>
                                     </div>`).join('') : '<p class="text-sm text-gray-500">No notes yet.</p>'}
                             </div>
                             <form id="add-note-form" data-id="${client.id}" class="flex space-x-2">
@@ -450,13 +460,10 @@
                 status: 'Lead', projectStatus: 'New Lead', notes: [], tasks: [], createdAt: serverTimestamp()
             };
             try {
-                const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/clients`), newLead);
+                await addDoc(collection(db, `artifacts/${appId}/users/${userId}/clients`), newLead);
                 await addDoc(collection(db, `artifacts/${appId}/users/${userId}/activityLog`), { text: `New lead added: ${newLead.firstName} ${newLead.lastName}.`, createdAt: serverTimestamp() });
                 showToast(`Lead for ${newLead.firstName} added!`, 'success');
-            } catch (e) {
-                console.error("Error adding document: ", e);
-                showToast('Failed to add lead.', 'error');
-            }
+            } catch (e) { console.error("Error adding document: ", e); showToast('Failed to add lead.', 'error'); }
         }
         
         async function deleteClient(id) {
@@ -467,10 +474,7 @@
                     await addDoc(collection(db, `artifacts/${appId}/users/${userId}/activityLog`), { text: `Client removed: ${client.firstName} ${client.lastName}.`, createdAt: serverTimestamp() });
                     showToast('Client deleted.', 'success');
                     window.location.hash = '#clients';
-                } catch (e) {
-                    console.error("Error deleting document: ", e);
-                    showToast('Failed to delete client.', 'error');
-                }
+                } catch (e) { console.error("Error deleting document: ", e); showToast('Failed to delete client.', 'error'); }
             });
         }
         
